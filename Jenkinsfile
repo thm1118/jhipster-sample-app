@@ -1,20 +1,20 @@
 #!/usr/bin/env groovy
 
 node {
-    stage('checkout') {
+    stage('签出代码') {
         checkout scm
     }
 
-    stage('check java') {
+    stage('检查java版本') {
         sh "java -version"
     }
 
-    stage('clean') {
+    stage('清理旧安装') {
         sh "chmod +x mvnw"
         sh "./mvnw clean"
     }
 
-    stage('install tools') {
+    stage('安装工具') {
         sh "./mvnw com.github.eirslett:frontend-maven-plugin:install-node-and-npm -DnodeVersion=v10.15.0 -DnpmVersion=6.4.1"
     }
 
@@ -22,7 +22,7 @@ node {
         sh "./mvnw com.github.eirslett:frontend-maven-plugin:npm"
     }
 
-    stage('backend tests') {
+    stage('后端测试') {
         try {
             sh "./mvnw test"
         } catch(err) {
@@ -32,7 +32,7 @@ node {
         }
     }
 
-    stage('frontend tests') {
+    stage('前端测试') {
         try {
             sh "./mvnw com.github.eirslett:frontend-maven-plugin:npm -Dfrontend.npm.arguments='run test'"
         } catch(err) {
@@ -42,11 +42,11 @@ node {
         }
     }
 
-    stage('packaging') {
+    stage('打包') {
         sh "./mvnw verify deploy -Pprod -DskipTests"
-        archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
+//        archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
     }
-    stage('quality analysis') {
+    stage('sonar扫描') {
         withSonarQubeEnv('sonar') {
             sh "./mvnw sonar:sonar"
         }
