@@ -43,7 +43,8 @@ node {
     }
 
     stage('打包') {
-        sh "./mvnw verify deploy -Pprod -DskipTests"
+//        sh "./mvnw verify deploy -Pprod -DskipTests"
+        sh "./mvnw verify package -DskipTests"
 //        archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
     }
     stage('sonar扫描') {
