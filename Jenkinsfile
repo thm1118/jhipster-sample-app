@@ -5,11 +5,11 @@ node {
         checkout scm
     }
 
-    stage('检查java版本') {
+    stage('检查java') {
         sh "java -version"
     }
 
-    stage('清理旧安装') {
+    stage('清理历史构建') {
         sh "chmod +x mvnw"
         sh "./mvnw clean"
     }
